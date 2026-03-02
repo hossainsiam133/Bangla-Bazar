@@ -1,0 +1,6 @@
+@Bangla_Bazar.Server_HostAddress = http://localhost:5272
+
+GET {{Bangla_Bazar.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

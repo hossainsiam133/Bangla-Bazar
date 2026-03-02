@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="bangla-bazar.client/bangla-bazar.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Bangla-Bazar.Server/Bangla-Bazar.Server.csproj" />
+</Solution>
