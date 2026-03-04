@@ -1,28 +1,23 @@
+using Bangla_Bazar.Server.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddDbContext<UserContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("BanglaBazarDB")));
 builder.Services.AddOpenApi();
-
+builder.Services.AddCors();
+builder.Services.AddControllers();
 var app = builder.Build();
 
-app.UseDefaultFiles();
-app.MapStaticAssets();
-
-// Configure the HTTP request pipeline.
+app.UseCors(builder =>
+    builder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+);
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+else
+    app.UseHttpsRedirection();
 app.MapControllers();
-
-app.MapFallbackToFile("/index.html");
-
 app.Run();

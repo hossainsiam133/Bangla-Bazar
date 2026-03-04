@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+06ea8621781bd568b5047d763fefe7d284171f23")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

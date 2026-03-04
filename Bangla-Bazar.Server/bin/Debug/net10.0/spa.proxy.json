@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:50433",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\Maraya Global\\Documents\\Gits\\Bangla-Bazar\\Bangla-Bazar.Server\\..\\bangla-bazar.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}
