@@ -2,7 +2,7 @@ using Bangla_Bazar.Server.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<UserContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("BanglaBazarDB")));
 builder.Services.AddOpenApi();
 builder.Services.AddCors();

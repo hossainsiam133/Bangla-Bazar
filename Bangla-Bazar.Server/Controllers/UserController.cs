@@ -12,12 +12,11 @@ namespace Bangla_Bazar.Server.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserContext _userContext;
-        public UserController(UserContext userContext)
+        private readonly AppDbContext _userContext;
+        public UserController(AppDbContext userContext)
         {
             _userContext = userContext;
         }
-
         [HttpGet()]
         public async Task<ActionResult<User>> GetUser()
         {
