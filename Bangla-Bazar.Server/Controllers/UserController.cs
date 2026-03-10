@@ -12,7 +12,7 @@ namespace Bangla_Bazar.Server.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _userContext;
+        private readonly AppDbContext? _userContext;
         public UserController(AppDbContext userContext)
         {
             _userContext = userContext;
@@ -20,7 +20,7 @@ namespace Bangla_Bazar.Server.Controllers
         [HttpGet()]
         public async Task<ActionResult<User>> GetUser()
         {
-            if (_userContext.Users == null)
+            if (_userContext?.Users == null)
                 return NotFound();
             var users = await _userContext.Users.ToListAsync();
             return Ok(users);

@@ -15,6 +15,7 @@ app.UseCors(builder =>
     .AllowAnyMethod()
     .AllowAnyOrigin()
 );
+app.UseStaticFiles();
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 else
