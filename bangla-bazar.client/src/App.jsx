@@ -1,51 +1,43 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Login.jsx';
+import Home from './Home.jsx';
+import AdminPannel from './AdminPannel.jsx';
+
+function getStoredUser() {
+    try { return JSON.parse(localStorage.getItem('bb_user')); } catch { return null; }
+}
+
+function PrivateRoute({ children, requiredRole }) {
+    const user = getStoredUser();
+    if (!user) return <Navigate to="/login" replace />;
+    if (requiredRole && user.role !== requiredRole)
+        return <Navigate to={user.role === 'Admin' ? '/admin' : '/home'} replace />;
+    return children;
+}
 
 function App() {
-    const [forecasts, setForecasts] = useState();
-
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
+    const user = getStoredUser();
+    const defaultRedirect = user ? (user.role === 'Admin' ? '/admin' : '/home') : '/login';
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/login"
+                    element={user ? <Navigate to={defaultRedirect} replace /> : <Login />}
+                />
+                <Route
+                    path="/home"
+                    element={<PrivateRoute requiredRole="User"><Home /></PrivateRoute>}
+                />
+                <Route
+                    path="/admin"
+                    element={<PrivateRoute requiredRole="Admin"><AdminPannel /></PrivateRoute>}
+                />
+                <Route path="*" element={<Navigate to={defaultRedirect} replace />} />
+            </Routes>
+        </BrowserRouter>
     );
-    
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        if (response.ok) {
-            const data = await response.json();
-            setForecasts(data);
-        }
-    }
 }
 
 export default App;

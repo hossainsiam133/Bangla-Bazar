@@ -1,0 +1,129 @@
+.bb-navbar {
+    min-height: 108px;
+    background: #efefef;
+}
+
+.bb-navbar .container-fluid {
+    position: relative;
+}
+
+.bb-search-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 34px;
+}
+
+.bb-search-form {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.35s ease, opacity 0.2s ease;
+}
+
+.bb-search-form-open {
+    width: min(48vw, 560px);
+    opacity: 1;
+}
+
+.bb-search-input {
+    border: 1px solid #f1c79c;
+    color: #9a560f;
+    border-radius: 999px;
+    min-height: 44px;
+}
+
+.bb-search-input:focus {
+    border-color: #f5871f;
+    box-shadow: 0 0 0 0.2rem rgba(245, 135, 31, 0.2);
+}
+
+.bb-nav-icon {
+    color: #f5871f;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bb-logo-wrap {
+    text-decoration: none;
+    color: #f5871f;
+    gap: 10px;
+}
+
+.bb-logo-mark {
+    color: #f5871f;
+    display: inline-flex;
+}
+
+.bb-logo-text {
+    display: inline-flex;
+    flex-direction: column;
+    line-height: 0.88;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+}
+
+.bb-nav-actions {
+    color: #f5871f;
+}
+
+.bb-cart {
+    position: relative;
+}
+
+.bb-cart-badge {
+    position: absolute;
+    top: -9px;
+    right: -12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f5871f;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 767.98px) {
+    .bb-navbar {
+        min-height: 82px;
+    }
+
+    .bb-logo-mark svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .bb-logo-text {
+        font-size: 1.2rem;
+    }
+
+    .bb-nav-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .bb-search-form-open {
+        width: min(46vw, 260px);
+    }
+
+    .bb-search-input {
+        min-height: 36px;
+        font-size: 0.85rem;
+    }
+
+    .bb-cart-badge {
+        width: 20px;
+        height: 20px;
+        top: -6px;
+        right: -8px;
+        font-size: 0.7rem;
+    }
+}
