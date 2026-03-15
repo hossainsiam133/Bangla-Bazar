@@ -36,7 +36,7 @@ namespace Bangla_Bazar.Server.Controllers
             return Ok(massage);
         }
         [HttpPost()]
-        public async Task<ActionResult<Order>> PostMassage(Massage massage)
+        public async Task<ActionResult<Massage>> PostMassage(Massage massage)
         {
             if (_massageContext?.Massages == null)
                 return NotFound();
@@ -47,7 +47,7 @@ namespace Bangla_Bazar.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutMassage(int id, Massage massage)
         {
-            if (massage?.Massages == null)
+            if (_massageContext?.Massages == null)
                 return NotFound();
             if (id != massage.Id)
                 return BadRequest();

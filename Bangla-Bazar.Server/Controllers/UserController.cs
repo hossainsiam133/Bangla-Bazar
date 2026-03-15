@@ -40,6 +40,7 @@ namespace Bangla_Bazar.Server.Controllers
         [HttpPost()]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            // user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             _userContext.Users.Add(user);
             await _userContext.SaveChangesAsync();
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);

@@ -1,0 +1,12 @@
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.AspNetCore.Mvc.Cors
+
+Migration =>
+dotnet ef migrations add initial -> then create 2/3 file in migrations folder
+dotnet ef database update -> update the database
+
+JWT Authentication =>
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+dotnet add package System.IdentityModel.Tokens.Jwt
