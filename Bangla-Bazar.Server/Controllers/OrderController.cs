@@ -35,6 +35,14 @@ namespace Bangla_Bazar.Server.Controllers
                 return NotFound();
             return Ok(order);
         }
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> CountOrder()
+        {
+            if (_orderContext?.Orders == null)
+                return NotFound();
+            var count = await _orderContext.Orders.CountAsync();
+            return Ok(count);
+        }
         [HttpPost()]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {

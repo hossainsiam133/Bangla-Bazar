@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Navbar1 from './Navbar1.jsx';
+import Navbar1 from './UserNav.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Home() {

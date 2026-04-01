@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar1.css';
-
-function Navbar1() {
+import './UserNav.css';
+function UserNav() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchInputRef = useRef(null);
 
@@ -79,4 +78,4 @@ function Navbar1() {
         </nav>
     );
 }
-export default Navbar1;
+export default UserNav;

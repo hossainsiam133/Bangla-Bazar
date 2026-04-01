@@ -36,7 +36,15 @@ namespace Bangla_Bazar.Server.Controllers
                 return NotFound();
             return Ok(user);
         }
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> CountUser()
+        {
+            if (_userContext?.Users == null)
+                return NotFound();
+            var count = await _userContext.Users.CountAsync();
 
+            return Ok(count);
+        }
         [HttpPost()]
         public async Task<ActionResult<User>> PostUser(User user)
         {

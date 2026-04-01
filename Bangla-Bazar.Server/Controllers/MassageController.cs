@@ -35,6 +35,15 @@ namespace Bangla_Bazar.Server.Controllers
                 return NotFound();
             return Ok(massage);
         }
+        
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> CountMassage()
+        {
+            if (_massageContext?.Massages == null)
+                return NotFound();
+            var count = await _massageContext.Massages.CountAsync();
+            return Ok(count);
+        }
         [HttpPost()]
         public async Task<ActionResult<Massage>> PostMassage(Massage massage)
         {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+710af0cd013e6efd1ce564849fd63676d13d4900")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3eec923f8627494467b37d07feba76f1a411b2fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bangla-Bazar.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

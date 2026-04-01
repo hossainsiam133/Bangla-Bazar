@@ -37,7 +37,15 @@ namespace Bangla_Bazar.Server.Controllers
                 return NotFound();
             return Ok(products);
         }
-
+        
+        [HttpGet("count")]
+        public async Task<ActionResult<int>> CountProduct()
+        {
+            if (_productContext?.Products == null)
+                return NotFound();
+            var count = await _productContext.Products.CountAsync();
+            return Ok(count);
+        }
         [HttpPost()]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
