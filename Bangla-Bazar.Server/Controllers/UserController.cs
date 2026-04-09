@@ -41,8 +41,7 @@ namespace Bangla_Bazar.Server.Controllers
         {
             if (_userContext?.Users == null)
                 return NotFound();
-            var count = await _userContext.Users.CountAsync();
-
+            var count = await _userContext.Users.Where(u => u.Role == "User").CountAsync();
             return Ok(count);
         }
         [HttpPost()]
