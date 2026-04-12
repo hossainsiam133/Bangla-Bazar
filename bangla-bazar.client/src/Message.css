@@ -1,0 +1,95 @@
+/* Message Styles */
+.message-form {
+    background: white;
+}
+
+.message-form .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.message-form textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    resize: vertical;
+}
+
+.message-form textarea:focus {
+    border-color: #f5871f;
+    box-shadow: 0 0 0 0.2rem rgba(245, 135, 31, 0.15);
+}
+
+.message-history {
+    background: white;
+}
+
+.message-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.message-item:hover {
+    background-color: #f9f9f9;
+}
+
+.message-item:last-child {
+    border-bottom: none;
+}
+
+.message-subject {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.message-content {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.message-date {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.message-delete-btn {
+    margin-left: 0.5rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .message-item {
+        padding: 0.75rem;
+    }
+
+    .message-content {
+        font-size: 0.9rem;
+    }
+
+    .message-form textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+@media (max-width: 576px) {
+    .message-subject {
+        font-size: 0.95rem;
+    }
+
+    .message-content {
+        font-size: 0.85rem;
+    }
+
+    .message-form {
+        margin-bottom: 1.5rem;
+    }
+
+    .message-item {
+        padding: 0.5rem;
+    }
+}

@@ -126,4 +126,54 @@
         right: -8px;
         font-size: 0.7rem;
     }
+
+    .bb-profile-dropdown {
+        right: auto;
+        left: 0;
+        min-width: 180px;
+    }
+}
+
+/* Profile dropdown styles */
+.bb-profile-wrapper {
+    position: relative;
+}
+
+.bb-profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 200px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 8px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.bb-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95rem;
+}
+
+.bb-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.bb-dropdown-item:hover {
+    background-color: #f9f9f9;
+}
+
+.bb-dropdown-item svg {
+    color: #f5871f;
+    flex-shrink: 0;
 }

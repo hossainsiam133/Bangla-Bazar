@@ -1071,6 +1071,22 @@
     overflow: hidden;
 }
 
+.product-category,
+.product-brand,
+.product-weight {
+    font-size: 0.9rem;
+    color: #4a5568;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.product-category strong,
+.product-brand strong,
+.product-weight strong {
+    color: #2d3748;
+    font-weight: 600;
+}
+
 .product-price {
     font-size: 1.35rem;
     font-weight: bold;
@@ -1154,6 +1170,12 @@
         font-size: 1rem;
     }
 
+    .product-category,
+    .product-brand,
+    .product-weight {
+        font-size: 0.85rem;
+    }
+
     .product-price {
         font-size: 1.2rem;
     }
@@ -1197,6 +1219,13 @@
     .product-info h4 {
         font-size: 0.95rem;
         min-height: 2em;
+    }
+
+    .product-category,
+    .product-brand,
+    .product-weight {
+        font-size: 0.8rem;
+        margin: 0.35rem 0;
     }
 
     .product-price {

@@ -6,7 +6,11 @@ function AdminProducts() {
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
+        category: '',
+        brand: '',
+        weight: '',
         price: '',
+        previousPrice: '',
         details: '',
         imageUrl: '',
     });
@@ -43,21 +47,33 @@ function AdminProducts() {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Image upload failed');
+                let errorMessage = `Upload failed with status ${response.status}`;
+                try {
+                    const error = await response.json();
+                    errorMessage = error.message || errorMessage;
+                } catch (e) {
+                    const text = await response.text();
+                    console.error('Server response:', text);
+                    errorMessage = text || errorMessage;
+                }
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
+            if (!data.imageUrl) {
+                throw new Error('No image URL in response');
+            }
             return data.imageUrl;
         } catch (error) {
+            console.error('Image upload error:', error);
             throw new Error(`Image upload error: ${error.message}`);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (!formData.name.trim() || !formData.price || !formData.details.trim() || !selectedFile) {
+
+        if (!formData.name.trim() || !formData.category.trim() || !formData.brand.trim() || !formData.weight.trim() || !formData.price || !formData.details.trim() || !selectedFile) {
             setMessage({ type: 'error', text: 'All fields are required' });
             return;
         }
@@ -70,11 +86,14 @@ function AdminProducts() {
             // Create product with image URL
             const productData = {
                 name: formData.name.trim(),
-                price: parseFloat(formData.price),
+                category: formData.category.trim(),
+                brand: formData.brand.trim(),
+                weight: formData.weight.trim(),
+                price: parseInt(formData.price) || 0,
+                previousPrice: parseInt(formData.previousPrice) || 0,
                 productDetails: formData.details.trim(),
                 imageUrl: imageUrl
             };
-
             const response = await fetch('http://localhost:5272/api/product', {
                 method: 'POST',
                 headers: {
@@ -88,7 +107,7 @@ function AdminProducts() {
             }
 
             setMessage({ type: 'success', text: 'Product added successfully!' });
-            setFormData({ name: '', price: '', details: '', imageUrl: '' });
+            setFormData({ name: '', category: '', brand: '', weight: '', price: '', previousPrice: '', details: '', imageUrl: '' });
             setSelectedFile(null);
             setShowAddForm(false);
 
@@ -102,7 +121,7 @@ function AdminProducts() {
     };
 
     const handleCancel = () => {
-        setFormData({ name: '', price: '', details: '', imageUrl: '' });
+        setFormData({ name: '', category: '', brand: '', weight: '', price: '', previousPrice: '', details: '', imageUrl: '' });
         setSelectedFile(null);
         setShowAddForm(false);
         setMessage({ type: '', text: '' });
@@ -149,7 +168,11 @@ function AdminProducts() {
         setEditingProduct(product);
         setFormData({
             name: product.name,
+            category: product.category,
+            brand: product.brand,
+            weight: product.weight,
             price: product.price.toString(),
+            previousPrice: product.previousPrice.toString(),
             details: product.productDetails,
             imageUrl: product.imageUrl,
         });
@@ -160,8 +183,8 @@ function AdminProducts() {
 
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
-        
-        if (!formData.name.trim() || !formData.price || !formData.details.trim()) {
+
+        if (!formData.name.trim() || !formData.category.trim() || !formData.brand.trim() || !formData.weight.trim() || !formData.price || !formData.details.trim()) {
             setMessage({ type: 'error', text: 'All fields are required' });
             return;
         }
@@ -169,7 +192,7 @@ function AdminProducts() {
         setLoading(true);
         try {
             let imageUrl = editingProduct.imageUrl;
-            
+
             // Upload new image if selected
             if (selectedFile) {
                 imageUrl = await uploadImage(selectedFile);
@@ -179,7 +202,11 @@ function AdminProducts() {
             const productData = {
                 id: editingProduct.id,
                 name: formData.name.trim(),
-                price: parseFloat(formData.price),
+                category: formData.category.trim(),
+                brand: formData.brand.trim(),
+                weight: formData.weight.trim(),
+                price: parseInt(formData.price),
+                previousPrice: parseInt(formData.previousPrice),
                 productDetails: formData.details.trim(),
                 imageUrl: imageUrl
             };
@@ -197,7 +224,7 @@ function AdminProducts() {
             }
 
             setMessage({ type: 'success', text: 'Product updated successfully!' });
-            setFormData({ name: '', price: '', details: '', imageUrl: '' });
+            setFormData({ name: '', category: '', brand: '', weight: '', price: '', previousPrice: '', details: '', imageUrl: '' });
             setSelectedFile(null);
             setEditingProduct(null);
             setShowUpdateForm(false);
@@ -215,7 +242,7 @@ function AdminProducts() {
     };
 
     const handleUpdateCancel = () => {
-        setFormData({ name: '', price: '', details: '', imageUrl: '' });
+        setFormData({ name: '', category: '', brand: '', weight: '', price: '', previousPrice: '', details: '', imageUrl: '' });
         setSelectedFile(null);
         setEditingProduct(null);
         setShowUpdateForm(false);
@@ -238,13 +265,13 @@ function AdminProducts() {
             {!showAddForm && !showProductsList && !showUpdateForm ? (
                 <div className="content-placeholder">
                     <div className="btn-group-vertical">
-                        <button 
+                        <button
                             className="btn btn-primary"
                             onClick={() => setShowAddForm(true)}
                         >
                             ➕ Add New Product
                         </button>
-                        <button 
+                        <button
                             className="btn btn-info"
                             onClick={fetchProducts}
                         >
@@ -265,7 +292,7 @@ function AdminProducts() {
                         <h3>All Products</h3>
                         <button className="btn btn-secondary" onClick={handleBackToMenu}>← Back</button>
                     </div>
-                    
+
                     {productsLoading ? (
                         <div className="loading-state">
                             <p>Loading products...</p>
@@ -279,8 +306,8 @@ function AdminProducts() {
                             {products.map(product => (
                                 <div key={product.id} className="product-card">
                                     <div className="product-image">
-                                        <img 
-                                            src={`http://localhost:5272${product.imageUrl}`} 
+                                        <img
+                                            src={`http://localhost:5272${product.imageUrl}`}
                                             alt={product.name}
                                             onError={(e) => {
                                                 e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
@@ -289,16 +316,22 @@ function AdminProducts() {
                                     </div>
                                     <div className="product-info">
                                         <h4>{product.name}</h4>
-                                        <p className="product-price">৳ {parseFloat(product.price).toFixed(2)}</p>
+                                        <p className="product-category"><strong>Category:</strong> {product.category}</p>
+                                        <p className="product-brand"><strong>Brand:</strong> {product.brand}</p>
+                                        <p className="product-weight"><strong>Weight:</strong> {product.weight}</p>
+                                        <p className="product-price">৳ {product.price}</p>
+                                        {product.previousPrice > 0 && (
+                                            <p className="product-previous-price">Previous: ৳ {product.previousPrice}</p>
+                                        )}
                                         <p className="product-details">{product.productDetails}</p>
                                         <div className="product-actions">
-                                            <button 
+                                            <button
                                                 className="btn btn-warning btn-sm"
                                                 onClick={() => startEditProduct(product)}
                                             >
                                                 ✏️ Edit
                                             </button>
-                                            <button 
+                                            <button
                                                 className="btn btn-danger btn-sm"
                                                 onClick={() => deleteProduct(product.id)}
                                             >
@@ -329,6 +362,48 @@ function AdminProducts() {
                         </div>
 
                         <div className="form-group">
+                            <label htmlFor="productCategory">Category *</label>
+                            <input
+                                type="text"
+                                id="productCategory"
+                                name="category"
+                                className="form-control"
+                                value={formData.category}
+                                onChange={handleInputChange}
+                                placeholder="Enter product category"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productBrand">Brand *</label>
+                            <input
+                                type="text"
+                                id="productBrand"
+                                name="brand"
+                                className="form-control"
+                                value={formData.brand}
+                                onChange={handleInputChange}
+                                placeholder="Enter product brand"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productWeight">Weight *</label>
+                            <input
+                                type="text"
+                                id="productWeight"
+                                name="weight"
+                                className="form-control"
+                                value={formData.weight}
+                                onChange={handleInputChange}
+                                placeholder="Enter product weight (e.g., 500g, 1kg)"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="productPrice">Price *</label>
                             <input
                                 type="number"
@@ -338,9 +413,24 @@ function AdminProducts() {
                                 value={formData.price}
                                 onChange={handleInputChange}
                                 placeholder="Enter price"
-                                step="0.01"
+                                step="1"
                                 min="0"
                                 required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productPreviousPrice">Previous Price</label>
+                            <input
+                                type="number"
+                                id="productPreviousPrice"
+                                name="previousPrice"
+                                className="form-control"
+                                value={formData.previousPrice}
+                                onChange={handleInputChange}
+                                placeholder="Enter previous price (optional)"
+                                step="1"
+                                min="0"
                             />
                         </div>
 
@@ -376,15 +466,15 @@ function AdminProducts() {
                         </div>
 
                         <div className="form-actions">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="btn btn-success"
                                 disabled={loading}
                             >
                                 {loading ? 'Adding Product...' : '✅ Add Product'}
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 className="btn btn-secondary"
                                 onClick={handleCancel}
                                 disabled={loading}
@@ -415,6 +505,48 @@ function AdminProducts() {
                         </div>
 
                         <div className="form-group">
+                            <label htmlFor="productCategory">Category *</label>
+                            <input
+                                type="text"
+                                id="productCategory"
+                                name="category"
+                                className="form-control"
+                                value={formData.category}
+                                onChange={handleInputChange}
+                                placeholder="Enter product category"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productBrand">Brand *</label>
+                            <input
+                                type="text"
+                                id="productBrand"
+                                name="brand"
+                                className="form-control"
+                                value={formData.brand}
+                                onChange={handleInputChange}
+                                placeholder="Enter product brand"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productWeight">Weight *</label>
+                            <input
+                                type="text"
+                                id="productWeight"
+                                name="weight"
+                                className="form-control"
+                                value={formData.weight}
+                                onChange={handleInputChange}
+                                placeholder="Enter product weight (e.g., 500g, 1kg)"
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="productPrice">Price *</label>
                             <input
                                 type="number"
@@ -424,9 +556,24 @@ function AdminProducts() {
                                 value={formData.price}
                                 onChange={handleInputChange}
                                 placeholder="Enter price"
-                                step="0.01"
+                                step="1"
                                 min="0"
                                 required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="productPreviousPrice">Previous Price</label>
+                            <input
+                                type="number"
+                                id="productPreviousPrice"
+                                name="previousPrice"
+                                className="form-control"
+                                value={formData.previousPrice}
+                                onChange={handleInputChange}
+                                placeholder="Enter previous price (optional)"
+                                step="1"
+                                min="0"
                             />
                         </div>
 
@@ -447,8 +594,8 @@ function AdminProducts() {
                         <div className="form-group">
                             <label htmlFor="productImage">Product Image</label>
                             <div className="current-image-preview">
-                                <img 
-                                    src={`http://localhost:5272${editingProduct.imageUrl}`} 
+                                <img
+                                    src={`http://localhost:5272${editingProduct.imageUrl}`}
                                     alt={editingProduct.name}
                                     onError={(e) => {
                                         e.target.src = 'https://via.placeholder.com/150x100?text=No+Image';
@@ -471,15 +618,15 @@ function AdminProducts() {
                         </div>
 
                         <div className="form-actions">
-                            <button 
-                                type="submit" 
+                            <button
+                                type="submit"
                                 className="btn btn-success"
                                 disabled={loading}
                             >
                                 {loading ? 'Updating Product...' : '✅ Update Product'}
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 className="btn btn-secondary"
                                 onClick={handleUpdateCancel}
                                 disabled={loading}

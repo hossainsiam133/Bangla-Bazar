@@ -1,0 +1,355 @@
+/* Footer Styles */
+.footer {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #ecf0f1;
+    margin-top: auto;
+    border-top: 3px solid #28a745;
+}
+
+.footer-content {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.footer-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.footer-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+    border-radius: 2px;
+}
+
+.footer-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #bdc3c7;
+    margin-bottom: 1.5rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 50%;
+    color: #28a745;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    background: #28a745;
+    color: white;
+    border-color: #20c997;
+    transform: translateY(-4px);
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+    color: #bdc3c7;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+}
+
+.footer-links a::before {
+    content: '→';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #28a745;
+    padding-left: 15px;
+}
+
+.footer-links a:hover::before {
+    opacity: 1;
+    left: -15px;
+}
+
+/* Contact Items */
+.contact-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: #28a745;
+    min-width: 30px;
+    text-align: center;
+    margin-top: 0.25rem;
+}
+
+.contact-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: 0.5px;
+}
+
+.contact-item p {
+    margin: 0;
+    color: #bdc3c7;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.contact-item a {
+    color: #28a745;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: #20c997;
+    text-decoration: underline;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 0;
+}
+
+.copyright {
+    margin: 0;
+    color: #95a5a6;
+    font-size: 0.9rem;
+}
+
+.copyright strong {
+    color: #28a745;
+}
+
+.payment-methods {
+    margin: 0;
+    color: #95a5a6;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.payment-label {
+    display: inline-block;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.payment-icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.payment-icons i {
+    font-size: 1.5rem;
+    color: #28a745;
+    transition: all 0.3s ease;
+}
+
+.payment-icons i:hover {
+    color: #20c997;
+    transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .footer-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-description {
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+        font-size: 0.9rem;
+    }
+
+    .contact-item {
+        margin-bottom: 1rem;
+    }
+
+    .contact-item i {
+        font-size: 1.25rem;
+    }
+
+    .social-links {
+        gap: 0.75rem;
+    }
+
+    .social-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .payment-methods {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .payment-icons {
+        gap: 0.75rem;
+    }
+
+    .payment-icons i {
+        font-size: 1.25rem;
+    }
+
+    .footer-bottom {
+        padding: 1.5rem 0;
+    }
+
+    .copyright,
+    .payment-methods {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        padding-top: 2.5rem;
+    }
+
+    .footer-bottom {
+        padding: 1.5rem 0;
+    }
+
+    .copyright,
+    .payment-methods {
+        text-align: center;
+    }
+
+    .contact-item {
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .footer-content {
+        padding-top: 3rem;
+        padding-bottom: 2rem;
+    }
+
+    .footer-links li {
+        margin-bottom: 0.9rem;
+    }
+
+    .contact-item {
+        margin-bottom: 1.25rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .footer-section {
+        padding-right: 1rem;
+    }
+
+    .footer-bottom {
+        padding: 2rem 0;
+    }
+}
+
+/* Border Top Animation */
+.footer {
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 50%, #28a745 100%);
+    background-size: 200% auto;
+    animation: gradientShift 3s linear infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% center;
+    }
+    50% {
+        background-position: 100% center;
+    }
+    100% {
+        background-position: 0% center;
+    }
+}
+
+/* Smooth transitions */
+.footer a {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Print Styles */
+@media print {
+    .footer {
+        background: white;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .social-icon {
+        display: none;
+    }
+
+    .footer-title::after {
+        background: #333;
+    }
+}

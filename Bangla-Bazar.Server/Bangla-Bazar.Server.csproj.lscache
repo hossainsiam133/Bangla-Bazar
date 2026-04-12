@@ -62,6 +62,7 @@ Controllers/
  CartController.cs
  MassageController.cs
  OrderController.cs
+ OtpController.cs
  ProductController.cs
  UserController.cs
 Migrations/
@@ -69,6 +70,12 @@ Migrations/
  20260309172118_CreatedAllDbTable_v1.Designer.cs
  20260314190018_EmailOtp.cs
  20260314190018_EmailOtp.Designer.cs
+ 20260410173426_UpdateProduct1.cs
+ 20260410173426_UpdateProduct1.Designer.cs
+ 20260411131550_UpdateProduct2.cs
+ 20260411131550_UpdateProduct2.Designer.cs
+ 20260411141818_UpdateProduct3.cs
+ 20260411141818_UpdateProduct3.Designer.cs
  AppDbContextModelSnapshot.cs
 Models/
  AppDbContext.cs
