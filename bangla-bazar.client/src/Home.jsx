@@ -4,6 +4,7 @@ import UserNav from './UserNav.jsx';
 import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Home.css';
+import { addProductToCart } from './cart.js';
 
 function Home() {
     const navigate = useNavigate();
@@ -15,12 +16,13 @@ function Home() {
     const [loadingOffers, setLoadingOffers] = useState(false);
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [imageErrors, setImageErrors] = useState({});
+    const [cartMessage, setCartMessage] = useState('');
 
     const banners = [
-        { id: 1, image: 'Assets/Banner01.jpg' },
-        { id: 2, image: 'Assets/Banner02.png' },
-        { id: 3, image: 'Assets/Banner03.jpeg' },
-        { id: 4, image: 'Assets/Banner04.jpeg' }
+        { id: 1,name:"#", image: 'Assets/Banner01.jpg' },
+        { id: 2,name:"Dates", image: 'Assets/Banner02.png' },
+        { id: 3,name:"Honey", image: 'Assets/Banner03.jpeg' },
+        { id: 4,name:"Oil & Ghee", image: 'Assets/Banner04.jpeg' }
     ];
 
     const lastBanner = { id: 5, image: 'Assets/Banner05.jpeg' };
@@ -56,6 +58,16 @@ function Home() {
         }, 5000);
         return () => clearInterval(bannerInterval);
     }, []);
+
+    useEffect(() => {
+        if (!cartMessage) return;
+
+        const messageTimer = setTimeout(() => {
+            setCartMessage('');
+        }, 2500);
+
+        return () => clearTimeout(messageTimer);
+    }, [cartMessage]);
 
     const fetchOfferedItems = async () => {
         try {
@@ -128,6 +140,18 @@ function Home() {
         }));
     };
 
+    const handleAddToCart = (product) => {
+        addProductToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            brand: product.brand,
+            weight: product.weight,
+            image: getImageUrl(product.imageUrl)
+        });
+        setCartMessage(`${product.name} added to cart!`);
+    };
+
     const getImageUrl = (imageUrl) => {
         if (!imageUrl) return null;
 
@@ -146,6 +170,12 @@ function Home() {
     return (
         <>
             <UserNav />
+
+            {cartMessage && (
+                <div className="home-toast" role="status" aria-live="polite">
+                    {cartMessage}
+                </div>
+            )}
             
             {/* Banner Carousel Section */}
             <section className="banner-carousel-section">
@@ -154,6 +184,7 @@ function Home() {
                         {banners.map((banner) => (
                             <div key={banner.id} className="banner-slide">
                                 <img
+                                    onClick={()=>handleCategoryClick(banner.name)}
                                     src={`http://localhost:5272/${banner.image}`}
                                     alt={`Banner ${banner.id}`}
                                     className="banner-image"
@@ -181,6 +212,7 @@ function Home() {
                 {/* Fixed Last Banner - Right Side */}
                 <div className="fixed-banner-right">
                     <img
+                       onClick={()=> handleCategoryClick("Oil & Ghee")}
                         src={`http://localhost:5272/${lastBanner.image}`}
                         alt="Banner 05"
                         className="fixed-banner-image"
@@ -268,7 +300,13 @@ function Home() {
                                             <span className="offered-product-price">৳{product.price}</span>
                                             <span className="offered-product-previous-price">৳{product.previousPrice}</span>
                                         </div>
-                                        <button className="btn btn-sm btn-success w-100 mt-2">
+                                        <button
+                                            className="btn btn-sm btn-success w-100 mt-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(product);
+                                            }}
+                                        >
                                             Add to Cart
                                         </button>
                                     </div>
@@ -345,8 +383,17 @@ function Home() {
                                             <div className="slider-product-image-placeholder">{product.name}</div>
                                         )}
                                     </div>
-                                    <h6 className="slider-product-name">{product.name}</h6>
-                                    <p className="slider-product-price">৳{product.price}</p>
+                                    <h6 className="slider-product-name">{product.name} {product.weight}</h6>
+                                    <p className="slider-product-price">৳{product.price} <strike className="offered-product-previous-price">{product.previousPrice?product.previousPrice:null}</strike></p> 
+                                        <button
+                                            className="btn btn-sm btn-success w-100 mt-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(product);
+                                            }}
+                                        >
+                                            Add to Cart
+                                        </button>
                                 </div>
                             ))}
                         </div>
@@ -385,8 +432,21 @@ function Home() {
                                             <div className="slider-product-image-placeholder">{product.name}</div>
                                         )}
                                     </div>
-                                    <h6 className="slider-product-name">{product.name}</h6>
-                                    <p className="slider-product-price">৳{product.price}</p>
+                                    <h6 className="slider-product-name">{product.name} {product.weight}</h6>
+                                    <p className="slider-product-price">৳{product.price} <strike className="offered-product-previous-price">{product.previousPrice?product.previousPrice:null}</strike></p> 
+                                      {/* <div className="offered-product-price-section">
+                                            <span className="offered-product-price">৳{product.price}</span>
+                                            <span className="offered-product-previous-price">৳{product.previousPrice}</span>
+                                        </div> */}
+                                        <button
+                                            className="btn btn-sm btn-success w-100 mt-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(product);
+                                            }}
+                                        >
+                                            Add to Cart
+                                        </button>
                                 </div>
                             ))}
                         </div>
@@ -425,8 +485,17 @@ function Home() {
                                             <div className="slider-product-image-placeholder">{product.name}</div>
                                         )}
                                     </div>
-                                    <h6 className="slider-product-name">{product.name}</h6>
-                                    <p className="slider-product-price">৳{product.price}</p>
+                                   <h6 className="slider-product-name">{product.name} {product.weight}</h6>
+                                    <p className="slider-product-price">৳{product.price} <strike className="offered-product-previous-price">{product.previousPrice?product.previousPrice:null}</strike></p> 
+                                        <button
+                                            className="btn btn-sm btn-success w-100 mt-2"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(product);
+                                            }}
+                                        >
+                                            Add to Cart
+                                        </button>
                                 </div>
                             ))}
                         </div>

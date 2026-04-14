@@ -4,6 +4,7 @@ import UserNav from './UserNav.jsx';
 import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Category.css';
+import { addProductToCart } from './cart.js';
 
 function Category() {
     const { categoryName } = useParams();
@@ -72,6 +73,10 @@ function Category() {
         navigate('/home');
     };
 
+    const handleProductClick = (productId) => {
+        navigate(`/category/${encodeURIComponent(categoryName)}/product/${productId}`);
+    };
+
     const handleImageError = (productId) => {
         setImageErrors(prev => ({
             ...prev,
@@ -99,35 +104,15 @@ function Category() {
 
     const handleAddToCart = (product) => {
         try {
-            // Get existing cart items from localStorage
-            const stored = localStorage.getItem('cartItems');
-            let cartItems = stored ? JSON.parse(stored) : [];
-            
-            // Check if product already exists in cart
-            const existingItem = cartItems.find(item => item.id === product.id);
-            
-            if (existingItem) {
-                // Increase quantity if product already in cart
-                existingItem.quantity += 1;
-            } else {
-                // Add new item - ONLY store current price, not previousPrice
-                // This prevents discount percentages from appearing in the cart navbar
-                cartItems.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    brand: product.brand,
-                    weight: product.weight,
-                    image: getImageUrl(product.imageUrl),
-                    quantity: 1
-                    // NOTE: Deliberately NOT storing previousPrice to fix discount bug
-                });
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            localStorage.setItem('cartCount', cartItems.reduce((sum, item) => sum + item.quantity, 0).toString());
-            
+            addProductToCart({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                brand: product.brand,
+                weight: product.weight,
+                image: getImageUrl(product.imageUrl)
+            });
+
             // Show success message
             alert(`${product.name} added to cart!`);
         } catch (error) {
@@ -207,7 +192,19 @@ function Category() {
                 {products.length > 0 ? (
                     <div className="products-grid">
                         {products.map((product) => (
-                            <div key={product.id} className="product-card">
+                            <div
+                                key={product.id}
+                                className="product-card"
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleProductClick(product.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleProductClick(product.id);
+                                    }
+                                }}
+                            >
                                 <div className="product-image-container">
                                     {(() => {
                                         const imageUrl = getImageUrl(product.imageUrl);
@@ -232,10 +229,12 @@ function Category() {
                                 <div className="product-body">
                                     <h6 className="product-name">{product.name}</h6>
                                     <p className="product-brand">
-                                        <small className="text-muted">{product.brand}</small>
+                                        <span className="meta-label">Brand</span>
+                                        <span className="meta-value">{product.brand || 'N/A'}</span>
                                     </p>
                                     <p className="product-weight">
-                                        <small className="text-muted">{product.weight}</small>
+                                        <span className="meta-label">Weight</span>
+                                        <span className="meta-value">{product.weight || 'N/A'}</span>
                                     </p>
                                     <div className="product-price-section">
                                         <span className="product-price">৳{product.price}</span>
@@ -245,7 +244,10 @@ function Category() {
                                     </div>
                                     <button 
                                         className="btn btn-sm btn-primary w-100 mt-2"
-                                        onClick={() => handleAddToCart(product)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleAddToCart(product);
+                                        }}
                                     >
                                         Add to Cart
                                     </button>

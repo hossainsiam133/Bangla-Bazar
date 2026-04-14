@@ -67,6 +67,15 @@
         padding: 0.75rem;
     }
 
+    .message-item .d-flex {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .message-item .btn {
+        align-self: flex-start;
+    }
+
     .message-content {
         font-size: 0.9rem;
     }
@@ -91,5 +100,9 @@
 
     .message-item {
         padding: 0.5rem;
+    }
+
+    .message-history .card-body {
+        padding: 0.9rem;
     }
 }

@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function AdminMessages() {
+    const API_BASE_URL = 'http://localhost:5272/api/massage';
+
     const [showMessages, setShowMessages] = useState(false);
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -11,13 +13,30 @@ function AdminMessages() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
+    const getMessageContent = (msg) => (msg?.content || msg?.massages || msg?.message || '').trim();
+    const getReplyContent = (msg) => (msg?.replies || msg?.reply || '').trim();
+
+    const getSenderName = (msg) => {
+        if (msg?.sender?.name) return msg.sender.name;
+        if (msg?.name) return msg.name;
+        if (msg?.senderId) return `User #${msg.senderId}`;
+        return 'Unknown User';
+    };
+
+    const getSenderEmail = (msg) => msg?.sender?.email || msg?.email || 'N/A';
+
+    const getSentDate = (msg) => msg?.sentAt || msg?.createdDate || msg?.date || null;
+
+    const isMessageReplied = (msg) => Boolean(getReplyContent(msg));
+
     const fetchMessages = async () => {
         setMessagesLoading(true);
+        setMessage({ type: '', text: '' });
         try {
-            const response = await fetch('http://localhost:5272/api/massage');
+            const response = await fetch(API_BASE_URL);
             if (!response.ok) throw new Error('Failed to fetch messages');
             const data = await response.json();
-            setMessages(data);
+            setMessages(Array.isArray(data) ? data : []);
             setShowMessages(true);
             setShowReplyForm(false);
         } catch (error) {
@@ -36,12 +55,17 @@ function AdminMessages() {
 
     const startReply = (msg) => {
         setEditingMessage(msg);
-        setReplyText('');
+        setReplyText(getReplyContent(msg));
         setShowReplyForm(true);
         setShowMessages(false);
     };
 
     const handleSendReply = async () => {
+        if (!editingMessage) {
+            setMessage({ type: 'error', text: 'No message selected for reply' });
+            return;
+        }
+
         if (!replyText.trim()) {
             setMessage({ type: 'error', text: 'Reply message cannot be empty' });
             return;
@@ -49,22 +73,17 @@ function AdminMessages() {
 
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5272/api/massage/${editingMessage.id}`, {
+            const response = await fetch(`${API_BASE_URL}/${editingMessage.id}/reply`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    ...editingMessage,
-                    reply: replyText.trim(),
-                    replied: true,
-                    repliedDate: new Date().toISOString()
-                }),
+                body: JSON.stringify({ replies: replyText.trim() }),
             });
 
             if (!response.ok) throw new Error('Failed to send reply');
 
-            setMessage({ type: 'success', text: 'Reply sent successfully!' });
+            setMessage({ type: 'success', text: 'Reply sent successfully.' });
             setReplyText('');
             setEditingMessage(null);
             setShowReplyForm(false);
@@ -83,7 +102,7 @@ function AdminMessages() {
 
         setLoading(true);
         try { 
-            const response = await fetch(`http://localhost:5272/api/massage/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/${id}`, {
                 method: 'DELETE',
             });
 
@@ -98,11 +117,23 @@ function AdminMessages() {
         }
     };
 
-    const filteredMessages = messages.filter(msg =>
-        (msg.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-        (msg.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-        (msg.message?.toLowerCase() || '').includes(searchQuery.toLowerCase())
-    );
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    const filteredMessages = messages.filter((msg) => {
+        if (!normalizedQuery) return true;
+
+        const name = getSenderName(msg).toLowerCase();
+        const email = getSenderEmail(msg).toLowerCase();
+        const content = getMessageContent(msg).toLowerCase();
+        const replies = getReplyContent(msg).toLowerCase();
+
+        return (
+            name.includes(normalizedQuery)
+            || email.includes(normalizedQuery)
+            || content.includes(normalizedQuery)
+            || replies.includes(normalizedQuery)
+        );
+    });
 
     return (
         <div className="admin-section">
@@ -162,7 +193,8 @@ function AdminMessages() {
                                         <tr>
                                             <th>Name</th>
                                             <th>Email</th>
-                                            <th>Message</th>
+                                            <th>Content</th>
+                                            <th>Replies</th>
                                             <th>Status</th>
                                             <th>Date</th>
                                             <th>Actions</th>
@@ -171,27 +203,36 @@ function AdminMessages() {
                                     <tbody>
                                         {filteredMessages.map(msg => (
                                             <tr key={msg.id}>
-                                                <td>{msg.name}</td>
-                                                <td>{msg.email}</td>
-                                                <td>{msg.massages?.substring(0, 50)}...</td>
+                                                <td>{getSenderName(msg)}</td>
+                                                <td>{getSenderEmail(msg)}</td>
                                                 <td>
-                                                    <span className={`badge ${msg.replied ? 'bg-success' : 'bg-warning'}`}>
-                                                        {msg.replied ? '✓ Replied' : '⏳ Pending'}
+                                                    {getMessageContent(msg)
+                                                        ? `${getMessageContent(msg).substring(0, 50)}${getMessageContent(msg).length > 50 ? '...' : ''}`
+                                                        : 'No message content'}
+                                                </td>
+                                                <td>
+                                                    {getReplyContent(msg)
+                                                        ? `${getReplyContent(msg).substring(0, 50)}${getReplyContent(msg).length > 50 ? '...' : ''}`
+                                                        : <span className="text-muted">No reply yet</span>}
+                                                </td>
+                                                <td>
+                                                    <span className={`badge ${isMessageReplied(msg) ? 'bg-success' : 'bg-warning'}`}>
+                                                        {isMessageReplied(msg) ? '✓ Replied' : '⏳ Pending'}
                                                     </span>
                                                 </td>
-                                                <td>{new Date(msg.createdDate).toLocaleDateString()}</td>
                                                 <td>
-                                                    {!msg.replied ? (
-                                                        <button
-                                                            className="btn btn-sm btn-primary"
-                                                            onClick={() => startReply(msg)}
-                                                            disabled={loading}
-                                                        >
-                                                            ✉️ Reply
-                                                        </button>
-                                                    ) : (
-                                                        <span className="text-muted text-sm">Replied</span>
-                                                    )}
+                                                    {getSentDate(msg)
+                                                        ? new Date(getSentDate(msg)).toLocaleDateString()
+                                                        : 'N/A'}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-sm btn-primary"
+                                                        onClick={() => startReply(msg)}
+                                                        disabled={loading}
+                                                    >
+                                                        {isMessageReplied(msg) ? '✏️ Edit Reply' : '✉️ Reply'}
+                                                    </button>
                                                     {' '}
                                                     <button
                                                         className="btn btn-sm btn-danger"
@@ -224,10 +265,15 @@ function AdminMessages() {
                                 <h5>Original Message</h5>
                             </div>
                             <div className="card-body">
-                                <p><strong>From:</strong> {editingMessage.name} ({editingMessage.email})</p>
-                                <p><strong>Date:</strong> {new Date(editingMessage.createdDate).toLocaleString()}</p>
-                                <p><strong>Message:</strong></p>
-                                <p className="text-muted">{editingMessage.message}</p>
+                                <p><strong>From:</strong> {getSenderName(editingMessage)} ({getSenderEmail(editingMessage)})</p>
+                                <p>
+                                    <strong>Date:</strong>{' '}
+                                    {getSentDate(editingMessage)
+                                        ? new Date(getSentDate(editingMessage)).toLocaleString()
+                                        : 'N/A'}
+                                </p>
+                                <p><strong>Content:</strong></p>
+                                <p className="text-muted">{getMessageContent(editingMessage) || 'No message content'}</p>
                             </div>
                         </div>
 

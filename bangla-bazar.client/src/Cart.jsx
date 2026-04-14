@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 import UserNav from './UserNav';
+import { persistCartItems, readCartItems, removeProductFromCart, setProductQuantityInCart } from './cart.js';
 
 function Cart() {
     const navigate = useNavigate();
@@ -10,12 +11,14 @@ function Cart() {
 
     useEffect(() => {
         // Load cart items from localStorage
-        const stored = localStorage.getItem('cartItems');
-        if (stored) {
-            const items = JSON.parse(stored);
+        const items = readCartItems();
+        if (items.length > 0) {
             setCartItems(items);
             calculateTotal(items);
+            return;
         }
+
+        setTotalPrice(0);
     }, []);
 
     const calculateTotal = (items) => {
@@ -23,25 +26,28 @@ function Cart() {
         setTotalPrice(total);
     };
 
-    const removeItem = (id) => {
+    const removeItem = async (id) => {
         const updated = cartItems.filter(item => item.id !== id);
         setCartItems(updated);
-        localStorage.setItem('cartItems', JSON.stringify(updated));
-        localStorage.setItem('cartCount', updated.length);
+        persistCartItems(updated);
         calculateTotal(updated);
+
+        await removeProductFromCart(id);
     };
 
-    const updateQuantity = (id, quantity) => {
+    const updateQuantity = async (id, quantity) => {
         if (quantity <= 0) {
-            removeItem(id);
+            await removeItem(id);
             return;
         }
         const updated = cartItems.map(item =>
             item.id === id ? { ...item, quantity } : item
         );
         setCartItems(updated);
-        localStorage.setItem('cartItems', JSON.stringify(updated));
+        persistCartItems(updated);
         calculateTotal(updated);
+
+        await setProductQuantityInCart(id, quantity);
     };
 
     const handleCheckout = () => {

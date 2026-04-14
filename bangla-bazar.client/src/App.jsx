@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Login.jsx';
+import Landing from './Landing.jsx';
 import Home from './Home.jsx';
 import Product from './Product.jsx';
 import Category from './Category.jsx';
@@ -11,6 +12,7 @@ import Checkout from './Checkout.jsx';
 import OrderConfirmation from './OrderConfirmation.jsx';
 import Message from './Message.jsx';
 import Order from './Order.jsx';
+import SearchProducts from './SearchProducts.jsx';
 
 function getStoredUser() {
     try { return JSON.parse(localStorage.getItem('bb_user')); } catch { return null; }
@@ -26,11 +28,12 @@ function PrivateRoute({ children, requiredRole }) {
 
 function App() {
     const user = getStoredUser();
-    const defaultRedirect = user ? (user.role === 'Admin' ? '/admin' : '/home') : '/login';
+    const defaultRedirect = user ? (user.role === 'Admin' ? '/admin' : '/home') : '/';
 
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Landing />} />
                 <Route
                     path="/login"
                     element={user ? <Navigate to={defaultRedirect} replace /> : <Login />}
@@ -41,6 +44,10 @@ function App() {
                 />
                 <Route
                     path="/product/:productId"
+                    element={<PrivateRoute requiredRole="User"><Product /></PrivateRoute>}
+                />
+                <Route
+                    path="/category/:categoryName/product/:productId"
                     element={<PrivateRoute requiredRole="User"><Product /></PrivateRoute>}
                 />
                 <Route
@@ -74,6 +81,10 @@ function App() {
                 <Route
                     path="/order"
                     element={<PrivateRoute requiredRole="User"><Order /></PrivateRoute>}
+                />
+                <Route
+                    path="/search"
+                    element={<PrivateRoute requiredRole="User"><SearchProducts /></PrivateRoute>}
                 />
                 <Route
                     path="/admin"

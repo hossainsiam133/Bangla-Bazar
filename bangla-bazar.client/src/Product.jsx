@@ -4,6 +4,7 @@ import UserNav from './UserNav.jsx';
 import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Product.css';
+import { addProductToCart } from './cart.js';
 
 function Product() {
     const { productId } = useParams();
@@ -15,13 +16,6 @@ function Product() {
     const [selectedImage, setSelectedImage] = useState(0);
     const [imageError, setImageError] = useState(false);
     const [relatedProducts, setRelatedProducts] = useState([]);
-    const [cart, setCart] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('bb_cart')) || [];
-        } catch {
-            return [];
-        }
-    });
 
     useEffect(() => {
         fetchProductDetail();
@@ -86,32 +80,15 @@ function Product() {
     };
 
     const handleAddToCart = () => {
-        const cartItem = {
-            productId: product.id,
+        addProductToCart({
+            id: product.id,
             name: product.name,
             price: product.price,
-            quantity: quantity,
-            imageUrl: product.imageUrl,
-            category: product.category,
             brand: product.brand,
-            weight: product.weight
-        };
+            weight: product.weight,
+            image: getImageUrl(product.imageUrl)
+        }, quantity);
 
-        const existingItem = cart.find(item => item.productId === product.id);
-        let updatedCart;
-
-        if (existingItem) {
-            updatedCart = cart.map(item =>
-                item.productId === product.id
-                    ? { ...item, quantity: item.quantity + quantity }
-                    : item
-            );
-        } else {
-            updatedCart = [...cart, cartItem];
-        }
-
-        localStorage.setItem('bb_cart', JSON.stringify(updatedCart));
-        setCart(updatedCart);
         alert(`${quantity} ${product.name}(s) added to cart!`);
         setQuantity(1);
     };

@@ -76,6 +76,12 @@ Migrations/
  20260411131550_UpdateProduct2.Designer.cs
  20260411141818_UpdateProduct3.cs
  20260411141818_UpdateProduct3.Designer.cs
+ 20260414051129_MessageUpdate1.cs
+ 20260414051129_MessageUpdate1.Designer.cs
+ 20260414053838_MessageUpdate2.cs
+ 20260414053838_MessageUpdate2.Designer.cs
+ 20260414144209_MessageUpdate3.cs
+ 20260414144209_MessageUpdate3.Designer.cs
  AppDbContextModelSnapshot.cs
 Models/
  AppDbContext.cs
@@ -409,7 +415,7 @@ Service/
  azure.identity/1.14.2/lib/net8.0/Azure.Identity.dll
  microsoft.aspnetcore.authentication.jwtbearer/10.0.3/lib/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
  microsoft.aspnetcore.openapi/10.0.3/lib/net10.0/Microsoft.AspNetCore.OpenApi.dll
- microsoft.aspnetcore.spaproxy/10.0.3/lib/net10.0/Microsoft.AspNetCore.SpaProxy.dll
+ microsoft.aspnetcore.spaproxy/10.0.5/lib/net10.0/Microsoft.AspNetCore.SpaProxy.dll
  microsoft.bcl.asyncinterfaces/8.0.0/lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll
  microsoft.bcl.cryptography/9.0.4/lib/net9.0/Microsoft.Bcl.Cryptography.dll
  microsoft.data.sqlclient/6.1.1/ref/net9.0/Microsoft.Data.SqlClient.dll

@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './UserNav.css';
+import { CART_UPDATED_EVENT, getCartCount, readCartItems } from './cart.js';
 function UserNav() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [cartCount, setCartCount] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
     const searchInputRef = useRef(null);
     const profileDropdownRef = useRef(null);
     const navigate = useNavigate();
@@ -33,11 +35,25 @@ function UserNav() {
     }, [isProfileOpen]);
 
     useEffect(() => {
-        // Retrieve cart count from localStorage or wherever it's stored
-        const stored = localStorage.getItem('cartCount');
-        if (stored) {
-            setCartCount(parseInt(stored, 10));
-        }
+        const refreshCartCount = () => {
+            const countFromItems = getCartCount(readCartItems());
+            if (countFromItems > 0) {
+                setCartCount(countFromItems);
+                return;
+            }
+
+            const storedCount = parseInt(localStorage.getItem('cartCount') || '0', 10);
+            setCartCount(Number.isNaN(storedCount) ? 0 : storedCount);
+        };
+
+        refreshCartCount();
+        window.addEventListener('storage', refreshCartCount);
+        window.addEventListener(CART_UPDATED_EVENT, refreshCartCount);
+
+        return () => {
+            window.removeEventListener('storage', refreshCartCount);
+            window.removeEventListener(CART_UPDATED_EVENT, refreshCartCount);
+        };
     }, []);
 
     const handleSearchToggle = () => {
@@ -46,6 +62,20 @@ function UserNav() {
 
     const handleProfileToggle = () => {
         setIsProfileOpen((prev) => !prev);
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        const trimmedQuery = searchQuery.trim();
+
+        if (!trimmedQuery) {
+            navigate('/home');
+            setIsSearchOpen(false);
+            return;
+        }
+
+        navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`);
+        setIsSearchOpen(false);
     };
 
     // const handleLogout = () => {
@@ -57,11 +87,12 @@ function UserNav() {
     //     window.location.href = '/login';
     // };
     const handleLogout = () => {
-        // Clear all user-related data
         localStorage.removeItem('bb_user');
         localStorage.removeItem('userToken');
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('cartItems');
         localStorage.removeItem('cartCount');
+        window.dispatchEvent(new Event(CART_UPDATED_EVENT));
         setIsProfileOpen(false);
         navigate('/login');
     };
@@ -83,7 +114,7 @@ function UserNav() {
                     <form
                         className={`bb-search-form ${isSearchOpen ? 'bb-search-form-open' : ''}`}
                         role="search"
-                        onSubmit={(e) => e.preventDefault()}
+                        onSubmit={handleSearchSubmit}
                     >
                         <input
                             ref={searchInputRef}
@@ -91,6 +122,8 @@ function UserNav() {
                             className="form-control bb-search-input"
                             placeholder="Search products..."
                             aria-label="Search products"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             onBlur={() => setIsSearchOpen(false)}
                         />
                     </form>
@@ -111,31 +144,39 @@ function UserNav() {
                 </a>
 
                 <div className="d-flex align-items-center gap-4 bb-nav-actions">
-                    <Link to="/message" className="btn p-0 border-0 bg-transparent bb-nav-icon" aria-label="Messages" title="Messages">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                            <path d="m2.5 11 4-3 4 3V7l-4-3-4 3v4z" />
-                        </svg>
-                    </Link>
+                    <div className="bb-nav-item">
+                        <Link to="/message" className="btn p-0 border-0 bg-transparent bb-nav-icon" aria-label="Messages" title="Messages">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M16 8.717c0 4.418-3.582 8-8 8a7.95 7.95 0 0 1-4.31-1.26c-.303-.191-.698-.222-1.086-.16l-2.028.323a.5.5 0 0 1-.57-.57l.323-2.028c.062-.389.03-.783-.16-1.086A7.95 7.95 0 0 1 0 8.717c0-4.418 3.582-8 8-8s8 3.582 8 8" />
+                                <path d="m6.11 10.51 1.265-1.602a.5.5 0 0 1 .673-.11l1.142.74a.5.5 0 0 0 .649-.093l1.865-2.24a.5.5 0 0 0-.762-.648L9.42 8.383a.5.5 0 0 1-.673.11l-1.142-.741a.5.5 0 0 0-.649.093l-1.63 1.956a.5.5 0 1 0 .784.709" />
+                            </svg>
+                        </Link>
+                        <span className="bb-nav-label">Messages</span>
+                    </div>
 
-                    <Link to="/order" className="btn p-0 border-0 bg-transparent bb-nav-icon" aria-label="Track Order" title="Track Order">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M4 8a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1 4 8zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
-                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 1A1.5 1.5 0 0 0 11 2.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                        </svg>
-                    </Link>
+                    <div className="bb-nav-item">
+                        <Link to="/order" className="btn p-0 border-0 bg-transparent bb-nav-icon" aria-label="Track Order" title="Track Order">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8.186 1.113a.5.5 0 0 1 .628 0l6 2.5a.5.5 0 0 1 .186.79l-6 7a.5.5 0 0 1-.758 0l-6-7a.5.5 0 0 1 .186-.79zM8 2.159 3.454 4.05 8 9.354l4.546-5.303z" />
+                                <path d="M2.5 5.5a.5.5 0 0 1 .5.5v5.793l5 2.5 5-2.5V6a.5.5 0 0 1 1 0v6a.5.5 0 0 1-.276.447l-5.5 2.75a.5.5 0 0 1-.448 0l-5.5-2.75A.5.5 0 0 1 2 12V6a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        </Link>
+                        <span className="bb-nav-label">Track Order</span>
+                    </div>
 
-                    <div className="bb-profile-wrapper" ref={profileDropdownRef}>
+                    <div className="bb-profile-wrapper bb-nav-item" ref={profileDropdownRef}>
                         <button
                             type="button"
                             className="btn p-0 border-0 bg-transparent bb-nav-icon"
                             aria-label="Profile"
+                            title="Profile"
                             onClick={handleProfileToggle}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                             </svg>
                         </button>
+                        <span className="bb-nav-label">Profile</span>
                         {isProfileOpen && (
                             <div className="bb-profile-dropdown">
                                 <div className="bb-dropdown-item">
@@ -155,14 +196,18 @@ function UserNav() {
                         )}
                     </div>
 
-                    <Link to="/cart" className="btn p-0 border-0 bg-transparent bb-nav-icon bb-cart" aria-label="Cart">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 14H4a.5.5 0 0 1-.491-.408L2.01 2H.5a.5.5 0 0 1-.5-.5M4.415 13h8.17l1.312-7H3.102z" />
-                        </svg>
-                        {cartCount > 0 && <span className="bb-cart-badge">{cartCount}</span>}
-                    </Link>
                 </div>
             </div>
+
+            <Link to="/cart" className="bb-cart-sidebar" aria-label="Cart" title="Cart">
+                <span className="bb-cart-sidebar-iconWrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 5H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 14H4a.5.5 0 0 1-.491-.408L2.01 2H.5a.5.5 0 0 1-.5-.5M4.415 13h8.17l1.312-7H3.102z" />
+                    </svg>
+                    {cartCount > 0 && <span className="bb-cart-sidebar-badge">{cartCount}</span>}
+                </span>
+                <span className="bb-cart-sidebar-label">Cart</span>
+            </Link>
         </nav>
     );
 }

@@ -4,6 +4,7 @@ import UserNav from './UserNav.jsx';
 import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Brand.css';
+import { addProductToCart } from './cart.js';
 
 function Brand() {
     const { brandName } = useParams();
@@ -92,6 +93,18 @@ function Brand() {
         }
         
         return `${baseUrl}/uploads/${imageUrl}`;
+    };
+
+    const handleAddToCart = (product) => {
+        addProductToCart({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            brand: product.brand,
+            weight: product.weight,
+            image: getImageUrl(product.imageUrl)
+        });
+        alert(`${product.name} added to cart!`);
     };
 
     if (loading) {
@@ -190,18 +203,23 @@ function Brand() {
                                 <div className="product-body">
                                     <h6 className="product-name">{product.name}</h6>
                                     <p className="product-brand">
-                                        <small className="text-muted">{product.brand}</small>
+                                        <span className="meta-label">Brand</span>
+                                        <span className="meta-value">{product.brand || 'N/A'}</span>
                                     </p>
                                     <p className="product-weight">
-                                        <small className="text-muted">{product.weight}</small>
+                                        <span className="meta-label">Weight</span>
+                                        <span className="meta-value">{product.weight || 'N/A'}</span>
                                     </p>
                                     <div className="product-price-section">
-                                        <span className="product-price">₹{product.price}</span>
+                                        <span className="product-price">৳{product.price}</span>
                                         {product.previousPrice > product.price && (
-                                            <span className="product-previous-price">₹{product.previousPrice}</span>
+                                            <span className="product-previous-price">৳{product.previousPrice}</span>
                                         )}
                                     </div>
-                                    <button className="btn btn-sm btn-primary w-100 mt-2">
+                                    <button
+                                        className="btn btn-sm btn-primary w-100 mt-2"
+                                        onClick={() => handleAddToCart(product)}
+                                    >
                                         Add to Cart
                                     </button>
                                 </div>

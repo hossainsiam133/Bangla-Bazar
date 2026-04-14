@@ -66,6 +66,13 @@
     text-decoration: none;
 }
 
+.social-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: currentColor;
+}
+
 .social-icon:hover {
     background: #28a745;
     color: white;

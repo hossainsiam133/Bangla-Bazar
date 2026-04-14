@@ -9,6 +9,50 @@
     align-items: stretch;
 }
 
+.home-toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1080;
+    max-width: min(92vw, 360px);
+    padding: 0.9rem 1.1rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 12px 28px rgba(25, 135, 84, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+    animation: homeToastIn 180ms ease-out;
+}
+
+@keyframes homeToastIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 576px) {
+    .home-toast {
+        top: auto;
+        right: 50%;
+        bottom: 1rem;
+        transform: translateX(50%);
+        width: calc(100vw - 2rem);
+        max-width: none;
+        border-radius: 18px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+}
+
 .banner-container {
     width: 100%;
     max-width: 100%;
