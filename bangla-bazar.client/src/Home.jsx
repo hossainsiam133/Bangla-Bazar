@@ -27,6 +27,12 @@ function Home() {
     ];
 
     const lastBanner = { id: 5, image: 'Assets/Banner05.jpeg' };
+    const buildBannerFallback = (label, width, height) =>
+        `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6b7280" font-family="Arial, sans-serif" font-size="28">${label}</text></svg>`
+        )}`;
+    const bannerFallbackImage = buildBannerFallback('Banner', 1200, 400);
+    const banner05FallbackImage = buildBannerFallback('Banner 05', 400, 500);
 
     const user = (() => {
         try { return JSON.parse(localStorage.getItem('bb_user')); } catch { return {}; }
@@ -161,11 +167,17 @@ function Home() {
         }
 
         const baseUrl = SERVER_BASE_URL;
+        const normalizedPath = imageUrl.replace(/^\/+/, '');
+
+        if (/^assets\//i.test(normalizedPath)) {
+            return `${baseUrl}/${normalizedPath}`;
+        }
+
         if (imageUrl.startsWith('/')) {
             return baseUrl + imageUrl;
         }
 
-        return `${baseUrl}/uploads/${imageUrl}`;
+        return `${baseUrl}/uploads/${normalizedPath}`;
     };
 
     return (
@@ -190,7 +202,8 @@ function Home() {
                                     alt={`Banner ${banner.id}`}
                                     className="banner-image"
                                     onError={(e) => {
-                                        e.target.src = 'https://via.placeholder.com/1200x400?text=Banner';
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = bannerFallbackImage;
                                     }}
                                 />
                             </div>
@@ -218,7 +231,8 @@ function Home() {
                         alt="Banner 05"
                         className="fixed-banner-image"
                         onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/400x500?text=Banner05';
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = banner05FallbackImage;
                         }}
                     />
                 </div>
