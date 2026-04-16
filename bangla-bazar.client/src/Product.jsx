@@ -5,6 +5,7 @@ import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Product.css';
 import { addProductToCart } from './cart.js';
+import { PRODUCT_API, SERVER_BASE_URL } from './config/api.js';
 
 function Product() {
     const { productId } = useParams();
@@ -31,7 +32,7 @@ function Product() {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch('http://localhost:5272/api/product');
+            const response = await fetch(PRODUCT_API);
             if (!response.ok) throw new Error('Failed to fetch products');
 
             const allProducts = await response.json();
@@ -53,7 +54,7 @@ function Product() {
 
     const fetchRelatedProducts = async () => {
         try {
-            const response = await fetch('http://localhost:5272/api/product');
+            const response = await fetch(PRODUCT_API);
             if (!response.ok) throw new Error('Failed to fetch products');
 
             const allProducts = await response.json();
@@ -72,7 +73,7 @@ function Product() {
         if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
             return imageUrl;
         }
-        const baseUrl = 'http://localhost:5272';
+        const baseUrl = SERVER_BASE_URL;
         if (imageUrl.startsWith('/')) {
             return baseUrl + imageUrl;
         }

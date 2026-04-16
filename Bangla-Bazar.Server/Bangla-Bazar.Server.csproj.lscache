@@ -15,8 +15,16 @@ primary
 lastDtbSucceeded
 
 [properties]
+AssemblyName=Bangla-Bazar.Server
 CommandLineArgsForDesignTimeEvaluation=-langversion:14.0 -define:TRACE
+CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=14.0
+ProjectAssetsFile=<PATH>obj/project.assets.json
+RootNamespace=Bangla_Bazar.Server
+RunAnalyzers=
+RunAnalyzersDuringLiveAnalysis=
+SolutionPath=<PATH>../Bangla-Bazar.slnx
+TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/Bangla-Bazar.Server.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/Bangla-Bazar.Server.dll
 TemporaryDependencyNodeTargetIdentifier=net10.0

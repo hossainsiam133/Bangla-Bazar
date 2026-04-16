@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar1 from './UserNav.jsx';
+import { AUTH_API } from './config/api.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Login.css';
 
@@ -20,7 +21,7 @@ function Login() {
         setInfo('');
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5272/api/auth/send-email-otp', { email });
+            const res = await axios.post(`${AUTH_API}/send-email-otp`, { email });
             setInfo(
                 res.data.otp
                     ? `Dev mode – your OTP is: ${res.data.otp}`
@@ -39,7 +40,7 @@ function Login() {
         setError('');
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5272/api/auth/verify-email-otp', { email, otp });
+            const res = await axios.post(`${AUTH_API}/verify-email-otp`, { email, otp });
             localStorage.setItem('bb_token', res.data.token);
             localStorage.setItem('bb_user', JSON.stringify(res.data.user));
             navigate(res.data.redirectTo);

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import './Message.css';
 import UserNav from './UserNav';
+import { MASSAGE_API, USER_API } from './config/api.js';
+
 
 function Message() {
-    const API_BASE_URL = 'http://localhost:5272/api/massage';
-    const USERS_API_URL = 'http://localhost:5272/api/user';
 
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -30,7 +30,7 @@ function Message() {
     const getReplyContent = (msg) => (msg?.replies || '').trim();
 
     const loadAdminReceiverId = async (userId) => {
-        const response = await fetch(USERS_API_URL);
+        const response = await fetch(USER_API);
         if (!response.ok) throw new Error('Failed to load users');
 
         const users = await response.json();
@@ -49,7 +49,7 @@ function Message() {
     const loadMessages = async (userId) => {
         setLoadingMessages(true);
         try {
-            const response = await fetch(API_BASE_URL);
+            const response = await fetch(MASSAGE_API);
             if (!response.ok) throw new Error('Failed to fetch messages');
 
             const data = await response.json();
@@ -108,7 +108,7 @@ function Message() {
                 content: newMessage.trim()
             };
 
-            const response = await fetch(API_BASE_URL, {
+            const response = await fetch(MASSAGE_API, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -135,7 +135,7 @@ function Message() {
         setStatus({ type: '', text: '' });
 
         try {
-            const response = await fetch(`${API_BASE_URL}/${id}`, {
+            const response = await fetch(`${MASSAGE_API}/${id}`, {
                 method: 'DELETE'
             });
 

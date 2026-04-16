@@ -1,7 +1,9 @@
+import { API_BASE_URL } from './config/api.js';
+
 const CART_ITEMS_KEY = 'cartItems';
 const CART_COUNT_KEY = 'cartCount';
 const CART_UPDATED_EVENT = 'bb-cart-updated';
-const CART_API_BASE_URL = 'http://localhost:5272/api/cart';
+const CART_API_BASE_URL = `${API_BASE_URL}/cart`;
 
 function getCurrentUserId() {
     try {

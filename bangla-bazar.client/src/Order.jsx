@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './Order.css';
 import UserNav from './UserNav';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ORDER_API } from './config/api.js';
 
 function Order() {
     const [orders, setOrders] = useState([]);
@@ -35,7 +36,7 @@ function Order() {
             setError('');
 
             // Fetch all orders from backend
-            const response = await fetch('http://localhost:5272/api/order');
+            const response = await fetch(ORDER_API);
             if (!response.ok) {
                 throw new Error('Failed to fetch orders');
             }

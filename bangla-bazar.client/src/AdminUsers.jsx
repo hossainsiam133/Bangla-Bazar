@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { USER_API } from './config/api.js';
 
 function AdminUsers() {
     const [showAddForm, setShowAddForm] = useState(false);
@@ -41,7 +42,7 @@ function AdminUsers() {
                 role: formData.role
             };
 
-            const response = await fetch('http://localhost:5272/api/user', {
+            const response = await fetch(USER_API, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ function AdminUsers() {
     const fetchUsers = async () => {
         setUsersLoading(true);
         try {
-            const response = await fetch('http://localhost:5272/api/user');
+            const response = await fetch(USER_API);
             if (!response.ok) throw new Error('Failed to fetch users');
             const data = await response.json();
             setUsers(data);
@@ -90,7 +91,7 @@ function AdminUsers() {
     const deactivateUser = async (userId) => {
         if (!window.confirm('Are you sure you want to deactivate this user?')) return;
         try {
-            const response = await fetch(`http://localhost:5272/api/user/${userId}`, {
+            const response = await fetch(`${USER_API}/${userId}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('Failed to deactivate user');
@@ -139,7 +140,7 @@ function AdminUsers() {
                 role: formData.role
             };
 
-            const response = await fetch(`http://localhost:5272/api/user/${editingUser.id}`, {
+            const response = await fetch(`${USER_API}/${editingUser.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

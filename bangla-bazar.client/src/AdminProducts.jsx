@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { PRODUCT_API, UPLOAD_API, SERVER_BASE_URL } from './config/api.js';
 
 function AdminProducts() {
     const [showAddForm, setShowAddForm] = useState(false);
@@ -41,7 +42,7 @@ function AdminProducts() {
             const formDataFile = new FormData();
             formDataFile.append('file', file);
 
-            const response = await fetch('http://localhost:5272/api/product/upload-image', {
+            const response = await fetch(UPLOAD_API, {
                 method: 'POST',
                 body: formDataFile,
             });
@@ -94,7 +95,7 @@ function AdminProducts() {
                 productDetails: formData.details.trim(),
                 imageUrl: imageUrl
             };
-            const response = await fetch('http://localhost:5272/api/product', {
+            const response = await fetch(PRODUCT_API, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +131,7 @@ function AdminProducts() {
     const fetchProducts = async () => {
         setProductsLoading(true);
         try {
-            const response = await fetch('http://localhost:5272/api/product');
+            const response = await fetch(PRODUCT_API);
             if (!response.ok) throw new Error('Failed to fetch products');
             const data = await response.json();
             setProducts(data);
@@ -146,7 +147,7 @@ function AdminProducts() {
     const deleteProduct = async (productId) => {
         if (!window.confirm('Are you sure you want to delete this product?')) return;
         try {
-            const response = await fetch(`http://localhost:5272/api/product/${productId}`, {
+            const response = await fetch(`${PRODUCT_API}/${productId}`, {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('Failed to delete product');
@@ -211,7 +212,7 @@ function AdminProducts() {
                 imageUrl: imageUrl
             };
 
-            const response = await fetch(`http://localhost:5272/api/product/${editingProduct.id}`, {
+            const response = await fetch(`${PRODUCT_API}/${editingProduct.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -307,7 +308,7 @@ function AdminProducts() {
                                 <div key={product.id} className="product-card">
                                     <div className="product-image">
                                         <img
-                                            src={`http://localhost:5272${product.imageUrl}`}
+                                            src={`${SERVER_BASE_URL}${product.imageUrl}`}
                                             alt={product.name}
                                             onError={(e) => {
                                                 e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
@@ -595,7 +596,7 @@ function AdminProducts() {
                             <label htmlFor="productImage">Product Image</label>
                             <div className="current-image-preview">
                                 <img
-                                    src={`http://localhost:5272${editingProduct.imageUrl}`}
+                                    src={`${SERVER_BASE_URL}${editingProduct.imageUrl}`}
                                     alt={editingProduct.name}
                                     onError={(e) => {
                                         e.target.src = 'https://via.placeholder.com/150x100?text=No+Image';

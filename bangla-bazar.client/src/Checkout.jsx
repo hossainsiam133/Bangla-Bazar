@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import UserNav from './UserNav';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Checkout.css';
+import { ORDER_API } from './config/api.js';
 
 function Checkout() {
     const navigate = useNavigate();
@@ -93,7 +94,7 @@ function Checkout() {
             };
 
             // Post order to backend
-            const response = await fetch('http://localhost:5272/api/order', {
+            const response = await fetch(ORDER_API, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

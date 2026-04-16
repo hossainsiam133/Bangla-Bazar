@@ -14,6 +14,7 @@ import {
 	removeProductFromCart,
 	setProductQuantityInCart
 } from './cart.js';
+import { PRODUCT_API, SERVER_BASE_URL } from './config/api.js';
 
 function Landing() {
 	const navigate = useNavigate();
@@ -128,7 +129,7 @@ function Landing() {
 	const fetchHomeData = async () => {
 		try {
 			setLoadingOffers(true);
-			const response = await fetch('http://localhost:5272/api/product');
+			const response = await fetch(PRODUCT_API);
 			if (!response.ok) throw new Error('Failed to fetch products');
 
 			const products = await response.json();
@@ -160,7 +161,7 @@ function Landing() {
 			return imageUrl;
 		}
 
-		const baseUrl = 'http://localhost:5272';
+		const baseUrl = SERVER_BASE_URL;
 		if (imageUrl.startsWith('/')) {
 			return baseUrl + imageUrl;
 		}
@@ -428,7 +429,7 @@ function Landing() {
 							<div key={banner.id} className="banner-slide">
 								<img
 									// onClick={redirectToLogin}
-									src={`http://localhost:5272/${banner.image}`}
+								src={`${SERVER_BASE_URL}/${banner.image}`}
 									alt={`Banner ${banner.id}`}
 									className="banner-image"
 									onError={(event) => {
@@ -454,7 +455,7 @@ function Landing() {
 				<div className="fixed-banner-right">
 					<img
 						// onClick={redirectToLogin}
-						src={`http://localhost:5272/${lastBanner.image}`}
+							src={`${SERVER_BASE_URL}/${lastBanner.image}`}
 						alt="Banner 05"
 						className="fixed-banner-image"
 						onError={(event) => {
@@ -477,7 +478,7 @@ function Landing() {
 									style={{ '--category-color': category.color }}
 								>
 									<div className="category-icon-wrapper">
-										<img src={`http://localhost:5272/${category.image}`} alt={category.name} className="category-icon" />
+								<img src={`${SERVER_BASE_URL}/${category.image}`} alt={category.name} className="category-icon" />
 									</div>
 									<h5 className="category-name">{category.name}</h5>
 									<span className="category-arrow">→</span>
@@ -617,7 +618,7 @@ function Landing() {
 								<div key={brand.id} className="brand-logo-card" onClick={() => handleBrandSelect(brand.name)}>
 									<div className="brand-logo-wrapper">
 										<img
-											src={`http://localhost:5272/${brand.image}`}
+										src={`${SERVER_BASE_URL}/${brand.image}`}
 											alt={brand.name}
 											className="brand-logo"
 											onError={(event) => {

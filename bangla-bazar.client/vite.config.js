@@ -46,16 +46,17 @@ export default defineConfig({
         }
     },
     server: {
-        proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
-            },
-            '^/api': {
-                target,
-                secure: false
-            }
-        },
+        // Proxy disabled - using environment variable VITE_API_URL for backend
+        // proxy: {
+        //     '^/weatherforecast': {
+        //         target,
+        //         secure: false
+        //     },
+        //     '^/api': {
+        //         target,
+        //         secure: false
+        //     }
+        // },
         port: parseInt(env.DEV_SERVER_PORT || '50433'),
         https: {
             key: fs.readFileSync(keyFilePath),

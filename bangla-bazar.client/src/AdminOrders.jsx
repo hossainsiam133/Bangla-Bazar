@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ORDER_API } from './config/api.js';
 
 function AdminOrders() {
     const [showOrders, setShowOrders] = useState(false);
@@ -15,7 +16,7 @@ function AdminOrders() {
     const fetchOrders = async () => {
         setOrdersLoading(true);
         try {
-            const response = await fetch('http://localhost:5272/api/order');
+            const response = await fetch(ORDER_API);
             if (!response.ok) throw new Error('Failed to fetch orders');
             const data = await response.json();
             setOrders(data);
@@ -32,7 +33,7 @@ function AdminOrders() {
     const fetchStatistics = async () => {
         setStatisticsLoading(true);
         try {
-            const response = await fetch('http://localhost:5272/api/order');
+            const response = await fetch(ORDER_API);
             if (!response.ok) throw new Error('Failed to fetch orders');
             const data = await response.json();
 
@@ -79,7 +80,7 @@ function AdminOrders() {
 
         try {
             const updatedOrder = { ...editingOrder, paymentStatus: newStatus };
-            const response = await fetch(`http://localhost:5272/api/order/${editingOrder.id}`, {
+            const response = await fetch(`${ORDER_API}/${editingOrder.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import AdminOrders from './AdminOrders.jsx';
 import AdminUsers from './AdminUsers.jsx';
 import AdminMessages from './AdminMessages.jsx';
 import axios from 'axios';
+import { USER_API, MASSAGE_API, ORDER_API, PRODUCT_API } from './config/api.js';
 
 function AdminPannel() {
     const navigate = useNavigate();
@@ -33,10 +34,10 @@ function AdminPannel() {
     const fetchStats = async () => {
         try {
             // Placeholder API calls - replace with actual endpoints
-            const usersResponse = await axios.get('http://localhost:5272/api/user/count');
-            const messagesResponse = await axios.get('http://localhost:5272/api/massage/count');
-            const ordersResponse = await axios.get('http://localhost:5272/api/order/count');
-            const productsResponse = await axios.get('http://localhost:5272/api/product/count');
+            const usersResponse = await axios.get(`${USER_API}/count`);
+            const messagesResponse = await axios.get(`${MASSAGE_API}/count`);
+            const ordersResponse = await axios.get(`${ORDER_API}/count`);
+            const productsResponse = await axios.get(`${PRODUCT_API}/count`);
 
             // const usersData = usersResponse.ok ? await usersResponse.json() : { count: 0 };
             // const ordersData = ordersResponse.ok ? await ordersResponse.json() : { count: 0 };

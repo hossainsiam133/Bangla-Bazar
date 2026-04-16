@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { API_BASE_URL } from './config/api.js';
 
 function AdminMessages() {
-    const API_BASE_URL = 'http://localhost:5272/api/massage';
 
     const [showMessages, setShowMessages] = useState(false);
     const [showReplyForm, setShowReplyForm] = useState(false);

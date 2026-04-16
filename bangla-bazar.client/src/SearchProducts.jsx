@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import UserNav from './UserNav.jsx';
 import Footer from './Footer.jsx';
+import { PRODUCT_API, SERVER_BASE_URL } from './config/api.js';
 
 function SearchProducts() {
 	const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ function SearchProducts() {
 			try {
 				setLoading(true);
 				setError('');
-				const response = await fetch('http://localhost:5272/api/product');
+				const response = await fetch(PRODUCT_API);
 				if (!response.ok) throw new Error('Failed to fetch products');
 
 				const data = await response.json();
@@ -58,7 +59,7 @@ function SearchProducts() {
 			return imageUrl;
 		}
 
-		const baseUrl = 'http://localhost:5272';
+		const baseUrl = SERVER_BASE_URL;
 		if (imageUrl.startsWith('/')) {
 			return baseUrl + imageUrl;
 		}

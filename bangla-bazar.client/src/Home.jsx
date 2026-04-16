@@ -5,6 +5,7 @@ import Footer from './Footer.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Home.css';
 import { addProductToCart } from './cart.js';
+import { PRODUCT_API, SERVER_BASE_URL } from './config/api.js';
 
 function Home() {
     const navigate = useNavigate();
@@ -72,7 +73,7 @@ function Home() {
     const fetchOfferedItems = async () => {
         try {
             setLoadingOffers(true);
-            const response = await fetch('http://localhost:5272/api/product');
+            const response = await fetch(PRODUCT_API);
             if (!response.ok) throw new Error('Failed to fetch products');
 
             const allProducts = await response.json();
@@ -93,7 +94,7 @@ function Home() {
     const fetchCategoryItems = async () => {
         try {
             setLoadingCategories(true);
-            const response = await fetch('http://localhost:5272/api/product');
+            const response = await fetch(PRODUCT_API);
             if (!response.ok) throw new Error('Failed to fetch products');
 
             const allProducts = await response.json();
@@ -159,7 +160,7 @@ function Home() {
             return imageUrl;
         }
 
-        const baseUrl = 'http://localhost:5272';
+        const baseUrl = SERVER_BASE_URL;
         if (imageUrl.startsWith('/')) {
             return baseUrl + imageUrl;
         }
@@ -185,7 +186,7 @@ function Home() {
                             <div key={banner.id} className="banner-slide">
                                 <img
                                     onClick={()=>handleCategoryClick(banner.name)}
-                                    src={`http://localhost:5272/${banner.image}`}
+                                    src={getImageUrl(banner.image)}
                                     alt={`Banner ${banner.id}`}
                                     className="banner-image"
                                     onError={(e) => {
@@ -213,7 +214,7 @@ function Home() {
                 <div className="fixed-banner-right">
                     <img
                        onClick={()=> handleCategoryClick("Oil & Ghee")}
-                        src={`http://localhost:5272/${lastBanner.image}`}
+                        src={getImageUrl(lastBanner.image)}
                         alt="Banner 05"
                         className="fixed-banner-image"
                         onError={(e) => {
@@ -248,7 +249,7 @@ function Home() {
                                     style={{ '--category-color': category.color }}
                                 >
                                     <div className="category-icon-wrapper">
-                                        <img src={`http://localhost:5272/${category.image}`} alt={category.name} className="category-icon" />
+                                        <img src={getImageUrl(category.image)} alt={category.name} className="category-icon" />
                                     </div>
                                     <h5 className="category-name">{category.name}</h5>
                                     <span className="category-arrow">→</span>
@@ -333,7 +334,7 @@ function Home() {
                                 >
                                     <div className="brand-logo-wrapper">
                                         <img
-                                            src={`http://localhost:5272/${brand.image}`}
+                                            src={getImageUrl(brand.image)}
                                             alt={brand.name}
                                             className="brand-logo"
                                             onError={(e) => {
