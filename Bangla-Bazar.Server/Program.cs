@@ -3,39 +3,48 @@ using Microsoft.EntityFrameworkCore;
 using Bangla_Bazar.Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("BanglaBazarDB")
+    ?? throw new InvalidOperationException("Connection string 'BanglaBazarDB' was not found.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("BanglaBazarDB")));
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddOpenApi();
 builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<EmailOtpService>();
+
 var app = builder.Build();
 
+// 2. Automatic Migration Logic for PostgreSQL
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
     try
     {
+        var dbContext = services.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
     }
-    catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 1801)
+    catch (Exception ex)
     {
-        // Database already exists, skip migration
-        Console.WriteLine("Database already exists. Skipping database creation.");
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
     }
 }
 
-app.UseCors(builder =>
-    builder
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowAnyOrigin()
+app.UseCors(policy =>
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowAnyOrigin()
 );
+
 app.UseStaticFiles();
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 else
     app.UseHttpsRedirection();
+
 app.MapControllers();
 app.Run();
