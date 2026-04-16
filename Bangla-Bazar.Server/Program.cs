@@ -26,7 +26,6 @@ builder.Services.AddScoped<EmailOtpService>();
 
 var app = builder.Build(); 
 
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -43,7 +42,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseCors("AllowAll");
-
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -52,4 +50,8 @@ else
     app.UseHttpsRedirection();
 
 app.MapControllers();
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://*:{port}");
+
 app.Run();
