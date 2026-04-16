@@ -16,51 +16,56 @@ const certificateName = "bangla-bazar.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-if (!fs.existsSync(baseFolder)) {
-    fs.mkdirSync(baseFolder, { recursive: true });
-}
-
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-    if (0 !== child_process.spawnSync('dotnet', [
-        'dev-certs',
-        'https',
-        '--export-path',
-        certFilePath,
-        '--format',
-        'Pem',
-        '--no-password',
-    ], { stdio: 'inherit', }).status) {
-        throw new Error("Could not create certificate.");
-    }
-}
-
-const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7066';
-
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [plugin()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+export default defineConfig(({ command }) => {
+    const isLocalServe = command === 'serve' && !env.VERCEL;
+
+    if (isLocalServe) {
+        if (!fs.existsSync(baseFolder)) {
+            fs.mkdirSync(baseFolder, { recursive: true });
         }
-    },
-    server: {
-        // Proxy disabled - using environment variable VITE_API_URL for backend
-        // proxy: {
-        //     '^/weatherforecast': {
-        //         target,
-        //         secure: false
-        //     },
-        //     '^/api': {
-        //         target,
-        //         secure: false
-        //     }
-        // },
-        port: parseInt(env.DEV_SERVER_PORT || '50433'),
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
+
+        if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+            if (0 !== child_process.spawnSync('dotnet', [
+                'dev-certs',
+                'https',
+                '--export-path',
+                certFilePath,
+                '--format',
+                'Pem',
+                '--no-password',
+            ], { stdio: 'inherit' }).status) {
+                throw new Error('Could not create certificate.');
+            }
         }
     }
+
+    return {
+        plugins: [plugin()],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
+            }
+        },
+        server: isLocalServe
+            ? {
+                // Proxy disabled - using environment variable VITE_API_URL for backend
+                // proxy: {
+                //     '^/weatherforecast': {
+                //         target,
+                //         secure: false
+                //     },
+                //     '^/api': {
+                //         target,
+                //         secure: false
+                //     }
+                // },
+                port: parseInt(env.DEV_SERVER_PORT || '50433'),
+                https: {
+                    key: fs.readFileSync(keyFilePath),
+                    cert: fs.readFileSync(certFilePath),
+                }
+            }
+            : undefined
+    };
 })
