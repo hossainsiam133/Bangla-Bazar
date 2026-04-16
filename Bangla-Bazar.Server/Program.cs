@@ -11,14 +11,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddOpenApi();
-builder.Services.AddCors();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<EmailOtpService>();
 
-var app = builder.Build();
+var app = builder.Build(); 
 
-// 2. Automatic Migration Logic for PostgreSQL
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -34,13 +42,10 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseCors(policy =>
-    policy.AllowAnyHeader()
-          .AllowAnyMethod()
-          .AllowAnyOrigin()
-);
+app.UseCors("AllowAll");
 
 app.UseStaticFiles();
+
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 else
