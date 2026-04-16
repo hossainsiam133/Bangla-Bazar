@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { API_BASE_URL } from './config/api.js';
+import { MASSAGE_API } from './config/api.js';
 
 function AdminMessages() {
 
@@ -33,7 +33,7 @@ function AdminMessages() {
         setMessagesLoading(true);
         setMessage({ type: '', text: '' });
         try {
-            const response = await fetch(API_BASE_URL);
+            const response = await fetch(MASSAGE_API);
             if (!response.ok) throw new Error('Failed to fetch messages');
             const data = await response.json();
             setMessages(Array.isArray(data) ? data : []);
@@ -73,7 +73,7 @@ function AdminMessages() {
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/${editingMessage.id}/reply`, {
+            const response = await fetch(`${MASSAGE_API}/${editingMessage.id}/reply`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ function AdminMessages() {
 
         setLoading(true);
         try { 
-            const response = await fetch(`${API_BASE_URL}/${id}`, {
+            const response = await fetch(`${MASSAGE_API}/${id}`, {
                 method: 'DELETE',
             });
 
