@@ -129,7 +129,7 @@ function UserNav() {
                     </form>
                 </div>
 
-                <a href='\home' className="navbar-brand d-flex align-items-center mb-0 bb-logo-wrap">
+                <Link to="/home" className="navbar-brand d-flex align-items-center mb-0 bb-logo-wrap">
                     <span className="bb-logo-mark">
                         <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                             <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" strokeWidth="2" />
@@ -141,7 +141,7 @@ function UserNav() {
                         <span>BANGLA</span>
                         <span>BAZAR</span>
                     </span>
-                </a>
+                </Link>
 
                 <div className="d-flex align-items-center gap-4 bb-nav-actions">
                     <div className="bb-nav-item">
