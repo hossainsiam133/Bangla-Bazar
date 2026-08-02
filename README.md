@@ -48,12 +48,14 @@ This project demonstrates backend architecture, RESTful API design, authenticati
 - MySQL
 - JWT Authentication
 - LINQ
+- Deployed in Render & Railway
 
 ### 🎨 Frontend
 - React
 - Axios
 - React Router
 - Bootstrap / Tailwind CSS (optional)
+- Deployed in Vercel
 
 ---
 
